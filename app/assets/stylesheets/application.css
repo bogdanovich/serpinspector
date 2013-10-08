@@ -1,0 +1,127 @@
+/*
+*= require_self
+*= require_tree . 
+
+*/
+
+
+html {height: 97%;}
+body {
+  height: 100%;
+  background-color: #fff; color: #333;
+}
+#content {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -20px;
+  overflow: auto;
+}
+#footer, #push {
+  height: 15px;
+  clear: both;
+}
+
+
+body, p, ol, ul, td {
+  font-family: verdana, arial, helvetica, sans-serif;
+  font-size:   13px;
+  line-height: 18px;
+}
+
+pre {
+  background-color: #eee;
+  padding: 10px;
+  font-size: 11px;
+}
+
+a { color: #000; }
+a:visited { color: #666; }
+a:hover { color: #fff; background-color:#000; }
+
+.fieldWithErrors {
+  padding: 2px;
+  background-color: red;
+  display: table;
+}
+
+#errorExplanation {
+  width: 400px;
+  border: 2px solid red;
+  padding: 7px;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+}
+
+#errorExplanation h2 {
+  text-align: left;
+  font-weight: bold;
+  padding: 5px 5px 5px 15px;
+  font-size: 12px;
+  margin: -7px;
+  background-color: #c00;
+  color: #fff;
+}
+
+#errorExplanation p {
+  color: #333;
+  margin-bottom: 0;
+  padding: 5px;
+}
+
+#errorExplanation ul li {
+  font-size: 12px;
+  list-style: square;
+}
+
+.list-line-even {
+    background-color: #CCCCCC;
+}
+
+.list-line-odd {
+    background-color: #EEEEEE;
+}
+
+.table-header {
+    background-color: #AAAAAA;
+    border: 1px;
+}
+
+.table-main {
+    border: 1px solid black;
+}
+
+.table-main td {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.table-label {
+    text-align: right;
+}
+
+#welcome {
+    position: absolute;
+    top: 10px;
+    right: 30px;
+}
+
+.report_groups_list_box {
+    width: 215px;
+}
+
+.reports_list_box {
+    width: 190px;
+}
+
+.arrow {
+    vertical-align: middle;
+}
+
+#selected_report_group {
+    font-weight: bold;
+}
+
+div.reports_overview {clear:both}
+div.reports_overview div.r {display:block; float:left; width:650px; line-height:25px; overflow:hidden; margin-right:5px; padding-left:15px; white-space: nowrap;}

@@ -1,0 +1,40 @@
+<h2>Log</h2>
+<%#= debug @log  %>
+<%= form_for(@log, :remote => true, :url => {:action => 'update'}) do |f| %>
+<%= render "shared/error_messages", :target => @log %>  
+<%= f.hidden_field :file_name, :value => @log.file_name  %>
+<%= f.hidden_field :refresh_interval, :value => @log.refresh_interval  %>
+
+<table border="0" class="table-main">
+  <tr>
+    <td width="280" class="list-line-even">Show last <%= f.text_field :height, :size => 3, :maxlength => 5  %> lines</td>
+    <td class="list-line-even"><%= f.submit 'Update' %></td>
+  </tr>
+  <tr>
+    <td class="list-line-odd">File: <span id="log_file_name"><%=h @log.file_name %></span> (<span id="log_file_size"><%=h @log.file_size %></span>)</td>
+    <td class="list-line-odd">
+      <%= link_to 'Clear', clear_log_viewer_index_path, data: { confirm: 'Are you sure?' }, :method => :delete, :remote => true  %>
+    </td>
+  </tr>
+</table>
+
+<table cellspacing="10" border="0">
+  <tr>
+  <% for file_name in Settings.log_viewer_available_files %>
+    <td>
+        <%= link_to file_name, select_file_log_viewer_index_path(:file_name => file_name), :remote => true  %>
+    </td>
+  <% end %>
+  </tr>
+ </table>
+
+<% end %>
+<div id="log_content">
+<div style='width: 1100px; height: 550px; overflow:  auto; white-space: pre; background-color: #DDDDDD' id='log_viewer_content'>
+  <%= @log.content %>
+</div>
+
+</div>
+<script type="text/javascript" charset="utf-8">
+$('#log_viewer_content').scrollTop($('#log_viewer_content')[0].scrollHeight - $('#log_viewer_content').height());
+</script>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>SERP Inspector</title>
+  <%= stylesheet_link_tag 'application' %>
+  <%= javascript_include_tag "application" %>
+  <%= javascript_include_tag "#{params[:controller]}" if SERPInspector::Application.assets.find_asset("#{params[:controller]}") %>
+  <%= javascript_include_tag "#{params[:controller]}_#{params[:action]}" if SERPInspector::Application.assets.find_asset("#{params[:controller]}_#{params[:action]}") %>
+  <%= csrf_meta_tag %>
+  <%= yield :head %>
+</head>
+<body>
+<div id="content">
+<div id="menu">
+<%= link_to "Projects", user_projects_path(session[:user_id]), id: 'projects_link' %>&nbsp;
+<%= link_to "Fast Overview", user_report_groups_path(session[:user_id]), id: 'fast_overview_link' %>&nbsp;
+<%= link_to "Reports", go_reports_user_path(session[:user_id]), id: 'reports_link' %>&nbsp;
+<a href="/search_engines" id="search_engines_link">Search Engines</a>&nbsp;
+<a href="/settings" id="settings_link">Settings</a>&nbsp;
+<a href="/users" id="users_link">Users</a>&nbsp;
+<% if can? :read, LogViewer %>
+<a href="/log_viewer" id="log_viewer_link">Log</a>&nbsp;
+<% end %>
+</div>
+<div id="welcome">
+  <b>Welcome, <%= session[:user_name] -%></b>&nbsp;&nbsp;&nbsp;<a href="/admin/logout" id='logout_link'>Logout</a>
+</div>
+<div id="main">
+<p style="color: green" id="notice"><%= flash[:notice] %></p>
+
+<%= yield %>
+</div>
+  <div id="push"></div>
+</div>
+<div id="footer">
+  <div><br/>&copy; SERPInspector 2011 - <%= Time.now.year %>. Page generated: <%= Time.now.strftime("%H:%m:%S %d.%m.%Y %z") %> </div>
+</div>
+</body>
+</html>

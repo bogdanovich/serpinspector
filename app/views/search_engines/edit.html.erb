@@ -1,0 +1,47 @@
+<h2>Editing Search Engine</h2>
+
+<%= form_for(@search_engine) do |f| %>
+  <%= render "shared/error_messages", :target => @search_engine %>  
+
+<table class="table-main">
+  <tr>
+    <td class="table-label table-header">Name:</td>
+    <td><%= f.text_field :name, :size => 150 %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Main Page Url:</td>
+    <td><%= f.text_field h(:main_url), :size => 150 %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Query Input Selector:</td>
+    <td><%= f.text_field h(:query_input_selector), :size => 150 %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Search Item Regex:</td>
+    <td><%= f.text_field h(:item_regex), :size => 150 %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Next Page Selector:</td>
+    <td><%= f.text_field h(:next_page_selector), :size => 150 %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Next Page Delay:</td>
+    <td><%= f.text_field h(:next_page_delay), :size => 5 %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Version:</td>
+    <td><%= f.text_field h(:version), :size => 5 %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Active:</td>
+    <td><%= f.check_box :active %></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="right"><%= f.submit 'Update' %></td>
+  </tr>
+
+</table>
+<% end %>
+
+<%= link_to 'Show', @search_engine %> |
+<%= link_to 'Back', search_engines_path %>

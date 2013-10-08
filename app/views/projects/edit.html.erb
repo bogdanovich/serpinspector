@@ -1,0 +1,95 @@
+<h2>Editing Project</h2>
+<%= form_for(@project, :url => user_project_path(@project.user_id, @project)) do |f| %>
+  <%= render "shared/error_messages", :target => @project %>  
+
+<table border="0">
+  <tr>
+    <td valign="top">
+
+<table class="table-main">
+  <tr>
+    <td class="table-label table-header">Name:</td>
+    <td><%= f.text_field :name %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Search Depth:</td>
+    <td><%= f.text_field :search_depth, :size => 3, :maxlength => 3 %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header" valign="top">Search Engines:</td>
+    <td>
+        <% for search_engine in SearchEngine.all %>
+        <div>
+          <%= check_box_tag  "project[search_engine_ids][]", search_engine.id, 
+              @search_engine_ids.include?(search_engine.id), id: "project_search_engine_ids_#{search_engine.id}" -%>
+          <%= search_engine.name %>
+        </div>
+        <% end %>
+    </td>
+  </tr>
+</table>
+<%= f.submit 'Save' %>
+
+    </td>
+    <td valign="top">
+
+      <table class="table-main">
+        <tr>
+          <td class="table-label table-header">Create reports:</td>
+          <td><%= select :project, :scheduler_mode, options_for_select(scheduler_modes, @project.scheduler_mode) -%></td>
+        </tr>
+        <tr id="scheduler_factor_field">
+          <td class="table-label table-header">Repeat every:</td>
+          <td><%= f.text_field :scheduler_factor, :size => 1 %> <span id="scheduler_factor_desc">day(s)</span></td>
+        </tr>
+        <tr id="scheduler_time_field">
+          <td class="table-label table-header">At:</td>
+          <td><%= time_select(:project, :scheduler_time, {:minute_step => 10}) -%></td>
+        </tr>
+        <tr id="scheduler_day_field">
+          <td class="table-label table-header">On:</td>
+          <td><%= select :project, :scheduler_day, options_for_select(days_for_select(@project.scheduler_mode), @project.scheduler_day) -%></td>
+        </tr>
+        
+
+      </table>
+
+    </td>
+  </tr>
+</table>
+
+<% end %>
+<br/>
+<table border="0">
+  <tr>
+    <td valign="top">
+      <%= form_for(Keyword.new, :remote => true, :url => user_project_keywords_path(@project.user_id, @project), :html => { :id => "keywords_form" }) do |f| %>
+      <table class="table-main" id="keywords">
+        <tr class="table-header"><th colspan="2">Keywords</td></tr>
+        <tr><td><%= f.text_field :name, :tabindex => 1 %></td><td><%= f.submit 'Add', id: 'add_keyword_button' %></td></tr>
+          <%=  render(:partial => "keyword", :collection => @keywords) %>
+      </table>
+      <% end %>
+    </td>
+    <td valign="top">
+      <%= form_for(Site.new, :remote => true, :url => user_project_sites_path(@project.user_id, @project), :html => { :id => "sites_form" }) do |f| %>
+      <table class="table-main" id="urls">
+        <tr class="table-header"><th colspan="2">Urls</td></tr>
+        <tr><td><%= f.text_field :name, :tabindex => 2 %></td><td><%= f.submit 'Add', id: 'add_site_button' %></td></tr>
+          <%=  render(:partial => "site", :collection => @sites) %>
+      </table>
+      <% end %>
+    </td>
+    
+  </tr>
+</table>
+
+<br/>
+<%= link_to 'Back', user_projects_path(@project.user_id) %>
+
+<script type='text/javascript'>
+$(document).ready(function() { 
+  modeSelected();
+  $('#project_scheduler_mode').change(modeSelected);
+});
+</script>

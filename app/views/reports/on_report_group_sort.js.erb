@@ -1,0 +1,6 @@
+$("#report_report_group_id")[0].selectedIndex = 0;
+$('#report_groups_list').html("<%= escape_javascript(render(:partial => 'report_groups_list', :object => @report_groups)) %>");
+$('#reports_list').html("<%= escape_javascript(render(:partial => 'reports_list', :object => @reports)) %>");
+$('#report').html("<%= escape_javascript(render(:partial => 'report', :object => @report_items)) %>");
+$('#report_groups_list').effect('highlight', {color: '#EDE02D'}, 1000);
+

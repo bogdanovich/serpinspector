@@ -1,0 +1,33 @@
+<h2>Settings</h2>
+
+<%= form_for @settings, :url => {:action => 'update'} do |f| %>
+  <%= render "shared/error_messages", :target => @settings %>  
+
+<table class="table-main">
+  <tr>
+    <td class="table-label table-header">Admin Email:</td>
+    <td><%= f.text_field :admin_email, :size => 100, :maxlength => 100 %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Not Found Symbol:</td>
+    <td><%= f.text_field :not_found_symbol, :size => 3, :maxlength => 3 %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Not Scanned Symbol:</td>
+    <td><%= f.text_field :not_scanned_symbol, :size => 3, :maxlength => 3 %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Default Time Format:</td>
+    <td><%= f.text_field :default_time_format, :size => 100, :maxlength => 50 %></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="right"><%= f.submit 'Update' %></td>
+  </tr>
+</table>
+
+<% if cannot? :update, SettingsForm %>
+    <script type="text/javascript"> $('new_settings_form').disable(); </script>
+<% end %>
+
+<% end -%>
+

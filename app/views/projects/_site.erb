@@ -1,0 +1,5 @@
+<tr id="site_<%=h site.id  %>">
+<td><%=h site.name %></td>
+<td align="center"><%= link_to 'X', user_project_site_path(site.project.user_id, site.project_id, site), 
+					   :method => :delete, :remote => true, id: 'ds_' + site.id.to_s  %></td>
+</tr>

@@ -1,0 +1,131 @@
+<script type="text/javascript">
+  <%=@positions_dataset%>
+</script>
+
+
+		<script type="text/javascript">
+		jQuery(function() {
+			// Create the chart
+			window.chart = new Highcharts.StockChart({
+			    chart: {
+			        renderTo: 'container'
+			    },
+
+			    rangeSelector: {
+			        selected: 1
+			    },
+
+			    title: {
+			        text: '<%= "URL: #{@site_url}, Keyword: #{@keyword}, Search Engine: #{@search_engine}"%>'
+			    },
+
+			    xAxis: {
+			        maxZoom: 14 * 24 * 3600000 // fourteen days
+			    },
+			    yAxis: {
+			        title: {
+			            text: 'Position'
+			        },
+                    plotLines: [{
+				        	value: 1,
+				        	color: 'green',
+				        	dashStyle: 'shortdash',
+				        	width: 2,
+				        	label: {
+				        		text: '1'
+				        	}
+				        },{
+				        	value: 2,
+				        	color: 'grey',
+				        	dashStyle: 'dot',
+				        	width: 1,
+				        	label: {
+				        		text: '2'
+				        	}
+				        },{
+				        	value: 3,
+				        	color: 'orange',
+				        	dashStyle: 'shortdash',
+				        	width: 2,
+				        	label: {
+				        		text: '3'
+				        	}
+				        },{
+				        	value: 4,
+				        	color: 'grey',
+				        	dashStyle: 'dot',
+				        	width: 1,
+				        	label: {
+				        		text: '4'
+				        	}
+				        },{
+				        	value: 5,
+				        	color: 'grey',
+				        	dashStyle: 'dot',
+				        	width: 1,
+				        	label: {
+				        		text: '5'
+				        	}
+				        },{
+				        	value: 6,
+				        	color: 'grey',
+				        	dashStyle: 'dot',
+				        	width: 1,
+				        	label: {
+				        		text: '6'
+				        	}
+				        },{
+				        	value: 7,
+				        	color: 'grey',
+				        	dashStyle: 'dot',
+				        	width: 1,
+				        	label: {
+				        		text: '7'
+				        	}
+				        },{
+				        	value: 8,
+				        	color: 'grey',
+				        	dashStyle: 'dot',
+				        	width: 1,
+				        	label: {
+				        		text: '8'
+				        	}
+				        },{
+				        	value: 9,
+				        	color: 'grey',
+				        	dashStyle: 'dot',
+				        	width: 1,
+				        	label: {
+				        		text: '9'
+				        	}
+				        }],
+                    plotBands: [{
+				        	from: 1,
+				        	to: 10,
+				        	color: 'rgba(68, 170, 213, 0.2)',
+				        	label: {
+				        		text: ''
+				        	}
+				        }],
+                    reversed: true,
+                    min: 1,
+                    tickInterval: 10
+			    },
+
+			    series: [{
+			        name: 'Positions',
+			        data: positions_dataset,
+                    marker : {
+                             enabled : true,
+                             radius : 2
+                             },
+
+				    shadow: true
+			    }]
+			});
+		});
+		</script>
+
+
+
+		<div id="container" style="height: 640px"></div>

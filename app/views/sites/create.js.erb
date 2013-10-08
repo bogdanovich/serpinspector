@@ -1,0 +1,7 @@
+$('#urls > tbody:last').append("<%= escape_javascript(render(:partial => 'projects/site', :object => @site)) %>");
+$('<%= "#site_" + @site.id.to_s %>').effect('highlight', {color: '#EDE02D'}, 1000);
+$('#sites_form')[0].reset();
+$('#site_name').focus();
+$('#notice').html("<%= escape_javascript(flash[:notice]) %>").hide();
+$('#notice').fadeIn();
+<% flash.discard %>

@@ -1,0 +1,32 @@
+<h2>Users</h2>
+
+<table class="table-main">
+  <tr class="table-header">
+    <th>Name</th>
+    <th>Role</th>
+    <th>Projects</th>
+    <th>Reports</th>
+    <td colspan="3">Action</th>
+  </tr>
+
+<% @users.each do |user| %>
+  <tr class="<%= cycle('list-line-odd','list-line-even')%>">
+    <td><%=h user.name %></td>
+    <td><%=h user.role.titleize %></td>
+    <td><%= link_to 'Projects', user_projects_path(user) %></td>
+    <td><%= link_to 'Reports',  go_reports_user_path(user) %></td>
+    <td><%= link_to 'Show', user, id: 's_' + user.id.to_s %></td>
+    <% if can? :edit, user %>
+        <td><%= link_to 'Edit', edit_user_path(user), id: 'e_' + user.id.to_s %></td>
+    <% end %>
+    <% if can? :destroy, user %>
+        <td><%= link_to 'X', user, data: { confirm: 'Are you sure?' }, method: :delete, id: 'd_' + user.id.to_s %></td>
+    <% end %>
+  </tr>
+<% end %>
+<% if can? :create, User %>
+  <tr><td colspan="7" align="right"><%= link_to 'New User', new_user_path %></td></tr>
+<% end %>
+</table>
+<br />
+

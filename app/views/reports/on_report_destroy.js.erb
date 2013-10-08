@@ -1,0 +1,8 @@
+$("#report_id option:selected").remove();
+$("#report_id")[0].selectedIndex = 0;
+$('#selected_report_group').effect('highlight', {color: '#EDE02D'}, 1000);
+$('#selected_report').effect('highlight', {color: '#EDE02D'}, 1000);
+$('#notice').html("<%= escape_javascript(flash[:notice]) %>").hide();
+$('#notice').fadeIn();
+
+<% flash.discard %>

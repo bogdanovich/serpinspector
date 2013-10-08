@@ -1,0 +1,112 @@
+<h2>Reports</h2>
+
+<%= form_for(:report, :remote => true, :html => {:id => 'report_form'}) do |f| %>
+
+<table cellspacing="0" cellpadding="0">
+  <tr valign="top"><td valign="top" width="100">
+<table border="0">
+  <tr>
+    <td>Projects:</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td id="report_groups_list">
+      <%= render(:partial => "report_groups_list", :object => @report_groups) %>
+    </td>
+    <td valign="top">
+      <input type='button' id='report_group_destroy' value='X'><br/>
+      <input type='button' id='report_group_sort' value='&alpha;'>
+      <input type='button' id='report_group_move_up' value='&uarr;'>
+      <input type='button' id='report_group_move_down' value='&darr;'>
+    </td>
+  </tr>
+</table>
+    </td><td valign="top" width="100">
+  <table border="0">
+  <tr>
+    <td>Reports: <%= select(:report, :show_limit, options_for_select(Settings.reports_show_limits, cookies[:reports_show_limit]), {}) -%></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td id="reports_list">
+      <%= render(:partial => "reports_list", :object => @reports) %>
+    </td>
+    <td valign="top">
+      <input type='button' id='report_destroy' value='X'>
+    </td>
+  </tr>
+</table>
+</td>
+<td valign="top" id="report">
+  <%= render(:partial => "report", :object => @report_items) %>
+</td>
+  </tr>
+</table>
+<% end %>
+
+<script type='text/javascript'>
+  $("#report_report_group_id").change(function() {
+      var serialized_data = $('#report_form').serialize();
+      $.ajax({url: '<%= on_report_group_change_user_reports_path(@selected_report_group.user_id) %>',
+      type:'POST',
+      data: serialized_data,
+      dataType: 'script'})
+  });
+
+  $("#report_show_limit").change(function() {
+      var serialized_data = $('#report_form').serialize();
+      $.ajax({url: '<%= on_show_limit_change_user_reports_path(@selected_report_group.user_id) %>',
+      type:'POST',
+      data: serialized_data,
+      dataType: 'script'})
+  });
+
+  $("#report_group_destroy").click(function() {
+      if (confirm('Are you sure to hide')) {
+        var serialized_data = $('#report_form').serialize();
+        $.ajax({url: '<%= url_for(:controller => :reports, :action => :on_report_group_destroy) %>',
+        type:'POST',
+        data: serialized_data,
+        dataType: 'script'})
+      }
+  });
+
+  $("#report_group_sort").click(function() {
+      if (confirm('Do you really want to sort reports alphabetically?')) {
+        var serialized_data = $('#report_form').serialize();
+        $.ajax({url: '<%= url_for(:controller => :reports, :action => :on_report_group_sort) %>',
+        type:'POST',
+        data: serialized_data,
+        dataType: 'script'})
+      }
+  });
+
+  $("#report_group_move_up").click(function() {
+      var serialized_data = $('#report_form').serialize();
+      $.ajax({url: '<%= on_report_group_move_up_user_reports_path(@user) %>',
+      type:'POST',
+      data: serialized_data,
+      dataType: 'script'})
+  });
+
+  $("#report_group_move_down").click(function() {
+      var serialized_data = $('#report_form').serialize();
+      $.ajax({url: '<%= on_report_group_move_down_user_reports_path(@user) %>',
+      type:'POST',
+      data: serialized_data,
+      dataType: 'script'})
+  });
+
+  $("#report_destroy").click(function() {
+      if (confirm('Are you sure to hide')) {
+        var serialized_data = $('#report_form').serialize();
+        $.ajax({url: '<%= url_for(:controller => :reports, :action => :on_report_destroy) %>',
+        type:'POST',
+        data: serialized_data,
+        dataType: 'script'})
+      }
+  });
+
+</script>
+
+<br />

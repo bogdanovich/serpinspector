@@ -1,0 +1,13 @@
+<table class="table-main">
+  <tr>
+    <td class="table-label table-header">Name:</td>
+    <td><%= @user.name %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Role</td>
+    <td><%= @user.role.titleize %></td>
+  </tr>
+</table>
+<br/>
+<%= link_to 'Edit', edit_user_path(@user) %> |
+<%= link_to 'Back', users_path %>

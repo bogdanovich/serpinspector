@@ -1,0 +1,12 @@
+$('#log_viewer_content').html("<%= escape_javascript(@log.content) %>");
+$('#log_viewer_file_name').val("<%= escape_javascript(@log.file_name) %>");
+$('#log_viewer_content').scrollTop($('#log_viewer_content')[0].scrollHeight - $('#log_viewer_content').height());
+$('#log_file_name').html("<%= escape_javascript(@log.file_name) %>");
+$('#log_file_size').html("<%= escape_javascript(@log.file_size) %>");
+$('#log_file_name').effect('highlight', {color: '#EDE02D'}, 1000);
+$('#log_file_size').effect('highlight', {color: '#EDE02D'}, 1000);
+$('#log_viewer_height').effect('highlight', {color: '#EDE02D'}, 1000);
+$('#notice').html("<%= escape_javascript(flash[:notice]) %>").hide();
+$('#notice').fadeIn();
+
+<% flash.discard %>

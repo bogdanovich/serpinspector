@@ -1,0 +1,4 @@
+$('#reports_list').html("<%= escape_javascript(render(:partial => 'reports_list', :object => @reports)) %>");
+$('#report').html("<%= escape_javascript(render(:partial => 'report', :object => @report_items)) %>");
+$('#selected_report_group').effect('highlight', {color: '#EDE02D'}, 1000);
+$('#selected_report').effect('highlight', {color: '#EDE02D'}, 1000);

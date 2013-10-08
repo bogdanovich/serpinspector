@@ -1,0 +1,12 @@
+<%= collection_select :report, :id, reports_list, :id, :created_at, {:selected => @selected_report.id},
+                      {:size => 30, :class => "reports_list_box", :tabindex => 2} -%>
+
+<script type='text/javascript'>
+$("#report_id").change(function() {
+      var serialized_data = $('#report_form').serialize();
+      $.ajax({url: '<%= on_report_change_user_reports_path(@selected_report_group.user_id) %>',
+      type:'POST',
+      data: serialized_data,
+      dataType: 'script'})
+  });
+</script>

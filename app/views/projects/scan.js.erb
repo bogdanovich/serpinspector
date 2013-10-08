@@ -1,0 +1,3 @@
+$('#notice').html("<%= escape_javascript(flash[:notice]) %>").hide();
+$('#notice').fadeIn();
+<% flash.discard %>

@@ -1,0 +1,13 @@
+<% cache('overview', :expires_in => 6.hours, :skip_digest => true)  do %>
+<h2>Overview (<%= link_to "Reload", refresh_user_report_groups_path(session[:user_id])%>)</h2>
+
+<div class="reports_overview">
+<% @user.reports_overview.each do |group_name, r| %>
+   <div class="r">
+    <% cache r['report'] do %>
+    	<%= render_report :report_group => r['group'], :report => r['report'] %>
+    <% end %>
+   </div>
+<% end %>
+</div>
+<% end %>

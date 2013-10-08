@@ -1,0 +1,39 @@
+<table class="table-main">
+  <tr>
+    <td class="table-label table-header">Name:</td>
+    <td><%=h @search_engine.name %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Main Page Url:</td>
+    <td><%=h @search_engine.main_url %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Query Input Selector:</td>
+    <td><%=h @search_engine.query_input_selector %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Search Item Regex:</td>
+    <td><%=h @search_engine.item_regex %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Next Page Selector:</td>
+    <td><%=h @search_engine.next_page_selector %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Next Page Delay:</td>
+    <td><%=h @search_engine.next_page_delay %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Version:</td>
+    <td><%=h @search_engine.version %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header">Active:</td>
+    <td><%= (@search_engine.active) ? "Yes" : "No" %></td>
+  </tr>
+</table>
+
+<% if can? :edit, SearchEngine %>
+    <%= link_to 'Edit', edit_search_engine_path(@search_engine) %> |
+<% end %>
+<%= link_to 'Back', search_engines_path %>

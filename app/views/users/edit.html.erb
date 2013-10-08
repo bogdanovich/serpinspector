@@ -1,0 +1,41 @@
+<h2>Editing User</h2>
+
+<%= form_for(@user) do |f| %>
+  <%= render "shared/error_messages", :target => @user %>  
+
+<table class="table-main">
+  <tr>
+    <td class="table-label table-header"><%= f.label :name %></td>
+    <td>
+        <% if can? :update_name, @user %>
+            <%= f.text_field :name %>
+        <% else %>
+            <%= @user.name %>
+        <% end %>
+    </td>
+  </tr>
+  <tr>
+    <td class="table-label table-header"><%= f.label :role %></td>
+    <td>
+        <% if can? :update_role, @user %>
+            <%= f.collection_select :role, Settings.user_roles_available, :downcase, :titleize %>
+        <% else %>
+            <%= @user.role %>
+        <% end %>
+    </td>
+  </tr>
+  <tr>
+    <td class="table-label table-header"><%= f.label :user_password, 'Password' %></td>
+    <td><%= f.password_field :password %></td>
+  </tr>
+  <tr>
+    <td class="table-label table-header"><%= f.label :user_password_confirmation, 'Confirm' %></td>
+    <td><%= f.password_field :password_confirmation %></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="right"><%= f.submit 'Update' %></td>
+  </tr>
+<% end %>
+</table>
+<%= link_to 'Show', @user %> |
+<%= link_to 'Back', users_path %>

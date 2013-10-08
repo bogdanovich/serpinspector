@@ -1,0 +1,19 @@
+<h1>SERP Inspector</h1>
+<div class="login-form">
+  <%= form_tag do  %>
+  <fieldset style="width: 250px">
+    <legend>Please Log In</legend>
+    <table border="0">
+      <tr>
+        <td><label for="name">Name:</label></td>
+        <td><%= text_field_tag :name, params[:name] %></td>
+      </tr>
+      <tr>
+        <td><label for="password">Password:</label></td>
+        <td><%= password_field_tag :password, params[:password] %></td>
+      </tr>
+      <tr><td colspan="2" align="right"><%= submit_tag 'Login' %></td></tr>
+    </table>
+  </fieldset>
+  <% end %>
+</div>

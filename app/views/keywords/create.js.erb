@@ -1,0 +1,7 @@
+$('#keywords > tbody:last').append("<%= escape_javascript(render(:partial => 'projects/keyword', :object => @keyword)) %>");
+$('<%= "#keyword_" + @keyword.id.to_s %>').effect('highlight', {color: '#EDE02D'}, 1000);
+$('#keywords_form')[0].reset();
+$('#keyword_name').focus();
+$('#notice').html("<%= escape_javascript(flash[:notice]) %>").hide();
+$('#notice').fadeIn();
+<% flash.discard %>

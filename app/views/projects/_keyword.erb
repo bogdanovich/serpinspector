@@ -1,0 +1,5 @@
+<tr id="keyword_<%=h keyword.id %>">
+<td><%=h keyword.name %></td>
+<td align="center"><%= link_to 'X', user_project_keyword_path(keyword.project.user_id, keyword.project_id, keyword), 
+					   :method => :delete, :remote => true, id: 'dk_' + keyword.id.to_s %></td>
+</tr>

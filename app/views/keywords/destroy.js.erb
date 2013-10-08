@@ -1,0 +1,4 @@
+$('<%= "#keyword_" + @keyword.id.to_s %>').fadeOut(100);
+$('#notice').html("<%= escape_javascript(flash[:notice]) %>").hide();
+$('#notice').fadeIn();
+<% flash.discard %>

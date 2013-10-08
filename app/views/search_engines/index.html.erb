@@ -1,0 +1,31 @@
+<h2>Search Engines</h2>
+
+<table class="table-main">
+  <tr class="table-header">
+    <th>Name</th>
+    <th>Version</th>
+    <th>Active</th>
+    <th colspan="3">Action</th>
+  </tr>
+
+<% @search_engines.each do |search_engine| %>
+  <tr class="<%= cycle('list-line-odd','list-line-even')%>">
+    <td><%=h search_engine.name %></td>
+    <td><%=h search_engine.version %></td>
+    <td><%= (search_engine.active) ? 'Yes' : 'No' %></td>
+    <td><%= link_to 'Show', search_engine, id: 's_' + search_engine.id.to_s %></td>
+    <% if can? :edit, SearchEngine %>
+        <td><%= link_to 'Edit', edit_search_engine_path(search_engine), id: 'e_' + search_engine.id.to_s%></td>
+    <% end %>
+    <% if can? :destroy, SearchEngine %>
+        <td><%= link_to 'X', search_engine, data: { confirm: 'Are you sure?' }, id: 'd_' + search_engine.id.to_s, :method => :delete if can?(:destroy, SearchEngine) %></td>
+    <% end %>
+  </tr>
+<% end %>
+<% if can? :create, SearchEngine %>
+  <tr><td colspan="6" align="right"><%= link_to 'New Search Engine', new_search_engine_path %></td></tr>
+<% end %>
+</table>
+
+<br />
+

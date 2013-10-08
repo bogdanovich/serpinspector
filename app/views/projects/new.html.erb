@@ -1,0 +1,25 @@
+<h2>New Project</h2>
+
+<%= form_for(@project, :url => user_projects_path(@project.user_id)) do |f| %>
+  <%= render "shared/error_messages", :target => @project %>  
+
+<table class="table-main">
+  <tr class="table-header">
+    <th><%= f.label :name %></th>
+    <th>Action</th>
+  </tr>
+  <tr>
+    <td><%= f.text_field :name %></td>
+    <td><%= f.submit 'Create' %></td>
+  </tr>
+</table>
+
+<% end %>
+
+<%= link_to 'Back', user_projects_path(@project.user_id) %>
+
+<script type="text/javascript">
+  $( document ).ready(function() {
+      $('#project_name').focus();
+  });
+</script>
