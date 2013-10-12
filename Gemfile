@@ -32,7 +32,6 @@ end
 group :development, :test do
   gem 'rspec'
   gem 'rspec-rails', '~> 2.13.1'
-  gem 'factory_girl_rails'
 
   require 'rbconfig'
   gem 'wdm', '>= 0.1.0' if RbConfig::CONFIG['target_os'] =~ /mswin|mingw/i
@@ -43,6 +42,7 @@ group :test do
   gem 'poltergeist'
   gem 'rb-notifu', '0.0.4'
   gem 'database_cleaner', '1.0.1'
+  gem 'factory_girl_rails'
 end
 
 
