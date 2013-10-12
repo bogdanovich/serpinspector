@@ -12,8 +12,8 @@ development:
   reconnect: false
   database: serpinspector_development
   pool: 5
-  username: si_dev
-  password: si720
+  username: serpinspector
+  password: ZcO5CihLeygQhmCm9UO0
   host: localhost
 
 test:
@@ -22,8 +22,8 @@ test:
   reconnect: false
   database: serpinspector_test
   pool: 5
-  username: si_test
-  password: si720
+  username: serpinspector
+  password: ZcO5CihLeygQhmCm9UO0
   host: localhost
 
 production:
@@ -32,6 +32,6 @@ production:
  reconnect: false
  database: serpinspector_production
  pool: 5
- username: si_prod
+ username: serpinspector
  password: ZcO5CihLeygQhmCm9UO0
  host: localhost

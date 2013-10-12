@@ -18,7 +18,6 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
 gem 'file-tail', :require => 'file/tail'
-gem 'curb'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
 gem 'daemons'
