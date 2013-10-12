@@ -84,8 +84,3 @@ stop:
 sctipt/delayed_job stop RAILS_ENV=production
 </pre>
 
-
-Known Issues
--------------
-
-Google captcha
