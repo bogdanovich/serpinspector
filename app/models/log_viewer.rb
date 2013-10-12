@@ -7,7 +7,7 @@ class LogViewer
 
   validates_presence_of :file_name, :height
   validates_inclusion_of :height, :in => 1..10000, :message => "can only be between 1 and 10000"
-  validates_inclusion_of :file_name, :in => Settings.log_viewer_available_files, :message => "invalid filename"
+  validates_inclusion_of :file_name, :in => Settings.defaults[:log_viewer_available_files], :message => "invalid filename"
 
   def initialize(attributes={})
    attributes && attributes.each do |name, value|
