@@ -71,7 +71,7 @@ server {
 }
 </pre>
 
-**Delayed Job**
+**Delayed Job background service**
 
 <pre>
 chmod +x script/delayed_job
@@ -86,3 +86,5 @@ sctipt/delayed_job stop RAILS_ENV=production
 
 Known Issues
 -------------
+
+Google captcha
