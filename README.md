@@ -34,7 +34,8 @@ bundle install
 Please generate your own mysql password and edit configuration settings at database.yml
 
 <pre>
-GRANT ALL ON `serpinspector_%`.* TO serpinspector@localhost IDENTIFIED BY '[your_generated_password]';
+GRANT ALL ON `serpinspector_%`.* TO serpinspector@localhost 
+IDENTIFIED BY '[your_generated_password]';
 FLUSH PRIVILEGES;
 </pre>
 
