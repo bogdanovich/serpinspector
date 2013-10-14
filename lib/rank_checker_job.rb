@@ -42,7 +42,7 @@ class RankCheckerJob < Struct.new(:project_id)
             begin
               positions = fetch_rankings(search_engine, keyword, @sites_urls, @project.search_depth)
             rescue Exception => details
-              log details.to_s + " " + details.backtrace.join("\n")
+              log details.to_s
               positions = {}
               @fetch_rankings_error = details.to_s
               @report.update_attribute :status, @fetch_rankings_error
@@ -58,13 +58,12 @@ class RankCheckerJob < Struct.new(:project_id)
               @project.last_scanned_at = Time.now
               @project.save!
               update_best_position(positions[site_url.name], site_url.name, keyword.name, search_engine.name)
-              #p @report_item
             end
           end
         end
         @report.update_attribute :status, (@fetch_rankings_error.blank? ? "Finished" : @fetch_rankings_error)
-      rescue Exception => details
-        log details.to_s + " " + details.backtrace.join("\n")
+      rescue => details
+        log details.to_s.lines.first
         @report.update_attribute :status, details.to_s
       end
     else
@@ -101,100 +100,82 @@ class RankCheckerJob < Struct.new(:project_id)
     
     current_depth = 0
     
-    log "#{Time.now} Fetching search results: #{current_depth.to_s}"
-    
-    @browser.navigate.to search_engine.main_url
-
     begin
+
+      @browser.navigate.to search_engine.main_url
+      log "#{Time.now} Navigating to: #{search_engine.main_url}"
+      sleep(random_delay(search_engine.next_page_delay))
+      log "#{Time.now} Fetching search results: #{current_depth.to_s} #{@browser.current_url}"
+
+      File.open("result.html", 'w') { |file| file.write(@browser.page_source) }
+
       element = @browser.find_element(query_input[:tag], query_input[:value])
       @browser.action.move_to(element).click(element).perform
       element.send_keys keyword.name
       element.submit
-    rescue Selenium::WebDriver::Error::NoSuchElementError
-      log "#{Time.now} Unable to find element with #{query_input[:tag]}=#{query_input[:value]}"
-      @browser.quit
-      return positions
-    rescue Selenium::WebDriver::Error => details 
-      log "#{Time.now} Unknown Selenium exception #{details.to_s}"
-      @browser.quit
-      return positions  
-    end
-    
 
-
-    while positions.has_value?(@not_found_symbol) and current_depth < search_depth do
-      
-      
-      sleep(random_delay(search_engine.next_page_delay))
-
-      # user emulation: moving mouse to input query field
-      element = @browser.find_element(query_input[:tag], query_input[:value])
-      @browser.action.move_to(element).perform
-
-      #user emulation: moving mouse downwards randomly
-      rand(1..10).times do |i|
-        @browser.action.move_by(0, rand(30..200)).perform
-      end
-      
-      page_body = @browser.page_source
-      fetched_urls = page_body.scan(item_regex)
-
-      #log "#{Time.now} Found #{fetched_urls.length} urls"
-
-      if fetched_urls.empty?
-        log "#{Time.now} Search results not found. IP was banned OR Need to update regular expressions"
-        log "#{Time.now} Search results not found. Saving page..."
-        #File.open("result.html", 'w') { |file| file.write(page_body) }
-        save_page_body(search_engine.name + ' ' + keyword.name, page_body)
-        @browser.quit
-        return positions
-      end
-
-      sites_urls.each do |site_url|
-        fetched_urls.each_with_index do |fetched_url, index|
-          if unescaped_url(fetched_url.first).include?(site_url.name)
-            positions[site_url.name] = current_depth + index + 1
-            break
-          end
-        end if positions[site_url.name] == @not_found_symbol
-      end
-      current_depth += fetched_urls.length
-
-      # user emulation: click random link with 20% chance
-      if rand(1..10) <= 3
-        current_url = @browser.current_url
-        log "#{Time.now} User emulation: clicking random link"
-        link_elements = @browser.find_elements(:tag_name, 'a')
-        # don't click on first 5 links
-        link_elements = link_elements[5..-1]
-        random_link = link_elements[rand(link_elements.length)]
-        @browser.action.move_to(random_link).click(random_link).perform
+      while positions.has_value?(@not_found_symbol) and current_depth < search_depth do
         sleep(random_delay(search_engine.next_page_delay))
-        #save_page_body(search_engine.name + ' ' + keyword.name + ' random link' + rand(0).to_s, @browser.page_source)
-        log "#{Time.now} User emulation: navigating back"
-        @browser.navigate.to current_url
-        sleep(random_delay(search_engine.next_page_delay))
-        #save_page_body(search_engine.name + ' ' + keyword.name + ' history back' + rand(0).to_s, @browser.page_source)
-      end
 
-      begin
+        # user emulation: moving mouse to input query field
+        element = @browser.find_element(query_input[:tag], query_input[:value])
+        @browser.action.move_to(element).perform
+
+        #user emulation: moving mouse downwards randomly
+        rand(1..10).times do |i|
+          @browser.action.move_by(0, rand(30..200)).perform
+        end  
+        
+        page_body = @browser.page_source
+        fetched_urls = page_body.scan(item_regex)
+
+        #log "#{Time.now} Found #{fetched_urls.length} urls"
+
+        if fetched_urls.empty?
+          log "#{Time.now} Search results not found. IP was banned OR Need to update regular expressions"
+          log "#{Time.now} Search results not found. Saving page..."
+          #File.open("result.html", 'w') { |file| file.write(page_body) }
+          save_page_body(search_engine.name + ' ' + keyword.name, page_body)
+          @browser.quit
+          return positions
+        end
+
+        sites_urls.each do |site_url|
+          fetched_urls.each_with_index do |fetched_url, index|
+            if unescaped_url(fetched_url.first).include?(site_url.name)
+              positions[site_url.name] = current_depth + index + 1
+              break
+            end
+          end if positions[site_url.name] == @not_found_symbol
+        end
+        current_depth += fetched_urls.length
         log "#{Time.now} Fetching search results: #{current_depth.to_s} #{@browser.current_url}"
+
+        # user emulation: click random link with 20% chance
+        if rand(1..10) <= 3
+          current_url = @browser.current_url
+          link_elements = @browser.find_elements(:tag_name, 'a')
+          # don't click on first 5 links
+          link_elements = link_elements[5..-1]
+          random_link = link_elements[rand(link_elements.length)]
+          log "#{Time.now} User emulation: clicking random link #{random_link.attribute('href')}"
+          @browser.action.move_to(random_link).click(random_link).perform
+          sleep(random_delay(search_engine.next_page_delay))
+          log "#{Time.now} User emulation: navigating back #{current_url}"
+          @browser.navigate.to current_url
+          sleep(random_delay(search_engine.next_page_delay))
+        end
+   
         element = @browser.find_element(next_page[:tag], next_page[:value])
         @browser.action.move_to(element).click(element).perform
-      rescue Selenium::WebDriver::Error::NoSuchElementError
-        log "#{Time.now} Unable to find element#{next_page[:tag]}=#{next_page[:value]}"
-        @browser.quit
-        return positions
-      rescue Selenium::WebDriver::Error => details 
-        log "#{Time.now} Unknown Selenium exception #{details.to_s}"
-        @browser.quit
-        return positions
       end
-
-      #delay = search_engine.next_page_delay + ((rand(2) > 0)? 1 : -1) * rand(0) * search_engine.next_page_delay
-      #sleep(delay)
+    rescue => details
+      log "#{Time.now} Selenium exception: #{details.to_s.lines.first}"
+      save_page_body("Exception #{search_engine.name} #{keyword.name}", @browser.page_source)
+      @browser.quit
+      return positions
     end
-    log "Found #{search_engine.name} keyword '#{keyword.name}': #{positions}"
+    log "#{Time.now} Found #{search_engine.name} keyword '#{keyword.name}': #{positions}"
     @browser.quit
     positions
   end
@@ -214,7 +195,6 @@ class RankCheckerJob < Struct.new(:project_id)
     dir = ::Rails.root.to_s + '/log/error_pages'
     FileUtils.mkpath dir unless File.directory? dir
     File.open(dir + '/' + file_name + ".html", 'w') do |f|
-      #f.write file_body.force_encoding("UTF-8")
       f.write file_body.respond_to?(:force_encoding) ? file_body.force_encoding("UTF-8") : file_body
     end
   end
@@ -252,5 +232,6 @@ class RankCheckerJob < Struct.new(:project_id)
   def random_delay(base_delay)
     base_delay + ((rand(2) > 0)? 1 : -1) * rand(0) * base_delay / 2
   end
-
 end
+
+

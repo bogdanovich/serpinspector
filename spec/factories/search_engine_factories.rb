@@ -17,7 +17,7 @@ FactoryGirl.define do
     sequence(:name)            { |n| "Bing.com #{Random.rand(0..1000000000)}" }
     main_url                   'http://www.bing.com'
     query_input_selector       'name:q'
-    item_regex                 '<div class="sb_tlst"><h3><a href="([^"]+)"'
+    item_regex                 '(?:<div class="sb_tlst"><h3>|<li class="b_algo"><h2>)<a href="([^"]+)"'
     next_page_selector         'class:sb_pagN'
     next_page_delay            7
     version                    0

@@ -27,7 +27,7 @@ SearchEngine.create(:name => 'Google.com (En)',
 SearchEngine.create(:name => 'Bing.com (En)',
                     :main_url => 'http://www.bing.com',
                     :query_input_selector => 'name:q',
-                    :item_regex => '<div class="sb_tlst"><h3><a href="([^"]+)"',
+                    :item_regex => '(?:<div class="sb_tlst"><h3>|<li class="b_algo"><h2>)<a href="([^"]+)"',
                     :next_page_selector => 'class:sb_pagN')
 
 SearchEngine.create(:name => 'Yahoo.com (En)',
