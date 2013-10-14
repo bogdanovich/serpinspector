@@ -26,9 +26,20 @@ FactoryGirl.define do
       end
     end
 
-    factory :project_rank_checking do
+    factory :project_rank_checking_bing do
 
-      search_engines { [create(:search_engine), create(:bing_com)] }
+      search_engines { [create(:bing_com)] }
+
+      after(:create) do |project, evaluator|
+        FactoryGirl.create(:keyword, project: project, name: 'search engine')
+        FactoryGirl.create(:keyword, project: project, name: 'google')
+        FactoryGirl.create(:site, project: project, name: 'google.com')
+      end
+    end
+
+    factory :project_rank_checking_google do
+
+      search_engines { [create(:search_engine)] }
 
       after(:create) do |project, evaluator|
         FactoryGirl.create(:keyword, project: project, name: 'search engine')

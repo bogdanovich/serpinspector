@@ -124,11 +124,16 @@ class RankCheckerJob < Struct.new(:project_id)
 
     while positions.has_value?(@not_found_symbol) and current_depth < search_depth do
       
-      delay = search_engine.next_page_delay + ((rand(2) > 0)? 1 : -1) * rand(0) * search_engine.next_page_delay / 2
-      sleep(delay)
+      
+      sleep(random_delay(search_engine.next_page_delay))
 
+      # user emulation: moving mouse to input query field
+      element = @browser.find_element(query_input[:tag], query_input[:value])
+      @browser.action.move_to(element).perform
+
+      #user emulation: moving mouse downwards randomly
       rand(1..10).times do |i|
-        @browser.action.move_by(rand(50..200), rand(50..200)).perform
+        @browser.action.move_by(0, rand(30..200)).perform
       end
       
       page_body = @browser.page_source
@@ -155,11 +160,27 @@ class RankCheckerJob < Struct.new(:project_id)
       end
       current_depth += fetched_urls.length
 
+      # user emulation: click random link with 20% chance
+      if rand(1..10) <= 3
+        current_url = @browser.current_url
+        log "#{Time.now} User emulation: clicking random link"
+        link_elements = @browser.find_elements(:tag_name, 'a')
+        # don't click on first 5 links
+        link_elements = link_elements[5..-1]
+        random_link = link_elements[rand(link_elements.length)]
+        @browser.action.move_to(random_link).click(random_link).perform
+        sleep(random_delay(search_engine.next_page_delay))
+        #save_page_body(search_engine.name + ' ' + keyword.name + ' random link' + rand(0).to_s, @browser.page_source)
+        log "#{Time.now} User emulation: navigating back"
+        @browser.navigate.to current_url
+        sleep(random_delay(search_engine.next_page_delay))
+        #save_page_body(search_engine.name + ' ' + keyword.name + ' history back' + rand(0).to_s, @browser.page_source)
+      end
+
       begin
         log "#{Time.now} Fetching search results: " + current_depth.to_s
         element = @browser.find_element(next_page[:tag], next_page[:value])
         @browser.action.move_to(element).click(element).perform
-        #element.click
       rescue Selenium::WebDriver::Error::NoSuchElementError
         log "#{Time.now} Unable to find element#{next_page[:tag]}=#{next_page[:value]}"
         @browser.quit
@@ -173,7 +194,7 @@ class RankCheckerJob < Struct.new(:project_id)
       #delay = search_engine.next_page_delay + ((rand(2) > 0)? 1 : -1) * rand(0) * search_engine.next_page_delay
       #sleep(delay)
     end
-    log        "Found #{search_engine.name} keyword '#{keyword.name}': #{positions}"
+    log "Found #{search_engine.name} keyword '#{keyword.name}': #{positions}"
     @browser.quit
     positions
   end
@@ -226,6 +247,10 @@ class RankCheckerJob < Struct.new(:project_id)
     logger  = Delayed::Worker.logger if logger.nil?
     puts message
     logger.info message
+  end
+
+  def random_delay(base_delay)
+    base_delay + ((rand(2) > 0)? 1 : -1) * rand(0) * base_delay / 2
   end
 
 end
