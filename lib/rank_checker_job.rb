@@ -101,7 +101,7 @@ class RankCheckerJob < Struct.new(:project_id)
     
     current_depth = 0
     
-    log "#{Time.now} Fetching search results: " + current_depth.to_s
+    log "#{Time.now} Fetching search results: #{current_depth.to_s}"
     
     @browser.navigate.to search_engine.main_url
 
@@ -178,7 +178,7 @@ class RankCheckerJob < Struct.new(:project_id)
       end
 
       begin
-        log "#{Time.now} Fetching search results: " + current_depth.to_s
+        log "#{Time.now} Fetching search results: #{current_depth.to_s} #{@browser.current_url}"
         element = @browser.find_element(next_page[:tag], next_page[:value])
         @browser.action.move_to(element).click(element).perform
       rescue Selenium::WebDriver::Error::NoSuchElementError
