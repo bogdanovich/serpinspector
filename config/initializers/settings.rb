@@ -13,7 +13,6 @@ Settings.defaults[:overview_updated_at]         = Time.now
 Settings.defaults[:crawler_user_agents_file]    = 'config/user_agents.txt'
 Settings.defaults[:reports_show_limits]         = [['last 5', '5'], ['last 15', '15'], ['last 30', '30'], ['last 60', '60'], 
                                                   ['last 180', '180'], ['last 360', '360'], ['All', '0']]
-Settings.defaults[:user_roles_available]        = ['user', 'admin']
 
 
 

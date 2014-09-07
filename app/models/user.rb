@@ -1,13 +1,16 @@
 require 'digest/sha1'
 
 class User < ActiveRecord::Base
+  
+  ROLES = %w{user admin}
+
   has_many :projects
   has_many :report_groups
 
   validates_presence_of :name
   validates_uniqueness_of :name
   validates_confirmation_of :password
-  validates_inclusion_of :role, :in => Settings.user_roles_available, :message => "There is no such role!"
+  validates_inclusion_of :role, :in => ROLES, :message => "There is no such role!"
   validate :password_not_blank
 
   def self.authenticate(name, password)

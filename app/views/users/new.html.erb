@@ -10,7 +10,7 @@
   </tr>
   <tr>
     <td class="table-label table-header"><%= f.label :role %></td>
-    <td><%= f.collection_select :role, Settings.user_roles_available, :downcase, :titleize %></td>
+    <td><%= f.collection_select :role, User::ROLES, :downcase, :titleize %></td>
   </tr>
   <tr>
     <td class="table-label table-header"><%= f.label :user_password, 'Password' %></td>
