@@ -12,6 +12,7 @@ Featues
 - Convenient reports view
 - Position change graph
 - Multi user interface
+- User behaviour emulation
 
 Installaton
 -------------
@@ -20,6 +21,11 @@ Installaton
 
 Firstly, install phantomjs from http://phantomjs.org/.
 Make sure the executable exists in your PATH and you can run it by typing 'phantomjs' in your terminal
+
+PhantomJS Ubuntu installation:
+<pre>sudo apt-get install phantomjs</pre>
+
+
 
 **SERPInspector app**
 
@@ -31,7 +37,7 @@ bundle install
 
 **MySQL database setup**
 
-Please generate your own mysql password and edit configuration settings at database.yml
+Please generate your own mysql password and *update configuration settings at database.yml*
 
 <pre>
 GRANT ALL ON `serpinspector_%`.* TO serpinspector@localhost 
@@ -39,21 +45,18 @@ IDENTIFIED BY '[your_generated_password]';
 FLUSH PRIVILEGES;
 </pre>
 
-<pre>
-rake db:setup RAILS_ENV=production
-</pre>
-
-**Preparing Assets**
-
-<pre>
-rake assets:precompile
-</pre>
-
-**Running Tests**
+**Run tests**
 
 <pre>
 rake db:setup RAILS_ENV=test
-bundle exec rspec
+RAILS_ENV=test bundle exec rspec
+</pre>
+
+**Production setup**
+
+<pre>
+rake db:setup RAILS_ENV=production
+rake assets:precompile
 </pre>
 
 **Web Server Configuration**
@@ -78,9 +81,14 @@ server {
 chmod +x script/delayed_job
 
 start:  
-sctipt/delayed_job start RAILS_ENV=production
+script/delayed_job start RAILS_ENV=production
 
 stop:
-sctipt/delayed_job stop RAILS_ENV=production
+script/delayed_job stop RAILS_ENV=production
 </pre>
+
+*Default login credentials:*
+login: admin
+password: admin
+
 
