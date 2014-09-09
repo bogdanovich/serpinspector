@@ -37,7 +37,8 @@ bundle install
 
 **MySQL database setup**
 
-Please generate your own mysql password and *update configuration settings at database.yml*
+Edit configuration settings in **config/database.yml:**<br/>
+Generate your own mysql user password and setup mysql user. 
 
 <pre>
 GRANT ALL ON `serpinspector_%`.* TO serpinspector@localhost 
