@@ -15,7 +15,7 @@ gem 'therubyracer', :platform => :ruby
 gem 'selenium-webdriver'
 
 gem 'jquery-rails'
-gem 'jquery-ui-rails'
+gem 'jquery-ui-rails', "~> 5.0.0"
 
 gem 'file-tail', :require => 'file/tail'
 gem 'delayed_job_active_record'
