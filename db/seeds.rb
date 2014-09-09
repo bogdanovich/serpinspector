@@ -2,7 +2,7 @@
 
 
 User.delete_all
-User.create({:name => 'test', :password => 'test', :role => 'admin'})
+User.create({:name => 'admin', :password => 'admin', :role => 'admin'})
 User.create({:name => 'test_user', :password => 'test'})
 
 Project.delete_all
