@@ -87,8 +87,9 @@ stop:
 script/delayed_job stop RAILS_ENV=production
 </pre>
 
-*Default login credentials:*
+**Default login credentials:**
+<pre>
 login: admin
 password: admin
-
+</pre>
 
