@@ -37,7 +37,7 @@ class LogViewerController < ApplicationController
   end
 
   def select_file
-    Settings.log_viewer_current_file = params[:file_name] if Settings.log_viewer_available_files.include?(params[:file_name])
+    Settings.log_viewer_current_file = params[:file_name] if LogViewer.existing_files.include?(params[:file_name])
     @log = LogViewer.load
     
     respond_to do |format|

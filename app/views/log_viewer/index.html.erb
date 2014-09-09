@@ -1,5 +1,4 @@
 <h2>Log</h2>
-<%#= debug @log  %>
 <%= form_for(@log, :remote => true, :url => {:action => 'update'}) do |f| %>
 <%= render "shared/error_messages", :target => @log %>  
 <%= f.hidden_field :file_name, :value => @log.file_name  %>
@@ -20,7 +19,7 @@
 
 <table cellspacing="10" border="0">
   <tr>
-  <% for file_name in Settings.log_viewer_available_files %>
+  <% for file_name in LogViewer.existing_files %>
     <td>
         <%= link_to file_name, select_file_log_viewer_index_path(:file_name => file_name), :remote => true  %>
     </td>
