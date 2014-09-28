@@ -37,6 +37,7 @@ group :test do
   gem 'rb-notifu', '0.0.4'
   gem 'database_cleaner', '~> 1.3.0'
   gem 'factory_girl_rails', require: false
+  gem 'shoulda-matchers', require: false
 end
 
 

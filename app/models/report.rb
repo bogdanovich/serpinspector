@@ -5,11 +5,11 @@ class Report < ActiveRecord::Base
   def prepare
     items = self.report_items
     not_scanned_symbol = Settings.not_scanned_symbol
-    report = Hash.new
+    report = {}
     report['data']           = Hash.new{|h,k| h[k] = Hash.new(&h.default_proc) }
     report['best_positions'] = Hash.new{|h,k| h[k] = Hash.new(&h.default_proc) }
-    report['columns']        = Array.new
-    report['rows']           = Array.new
+    report['columns']        = []
+    report['rows']           = []
     for item in items
       report['data'][item.site][item.keyword][item.search_engine] = {'position' => item.position, 'position_change' => item.position_change}
       report['columns'] << item.search_engine unless report['columns'].include?(item.search_engine)
