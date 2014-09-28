@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe "SearchEngines Integration Tests:" do
-  describe "Admin" do
+describe "SearchEngines Integration Test" do
+  describe "Admin shold be able to" do
   	include_context 'login'
     
     before(:each) do 
@@ -10,18 +10,18 @@ describe "SearchEngines Integration Tests:" do
       login(@user)
     end
 
-    it "should be able to list search engines" do
+    it "list search engines" do
       visit search_engines_path
       expect(page).to have_content @search_engine.name
     end
 
-    it "should be able to view search engine" do
+    it "view search engine" do
       visit search_engines_path
       click_link "s_#{@search_engine.id}"
       expect(page).to have_content @search_engine.name
     end
 
-    it "should be able to edit search engine" do
+    it "edit search engine" do
       se = FactoryGirl.build(:search_engine)
       visit search_engines_path
       click_link "e_#{@search_engine.id}"
@@ -38,14 +38,14 @@ describe "SearchEngines Integration Tests:" do
       expect(page).to have_content se.name
     end
 
-    it 'should be able to delete search engine' do
+    it 'sdelete search engine' do
       visit search_engines_path
       click_link "d_#{@search_engine.id}"
       page.driver.browser.switch_to.alert.accept if page.driver.class == Capybara::Selenium::Driver
       expect(page).to have_content "SearchEngine #{@search_engine.name} was deleted."
     end
 
-    it 'should be able to create new search engine' do
+    it 'create new search engine' do
       se = FactoryGirl.build(:search_engine)
       visit search_engines_path
       click_link "New Search Engine"

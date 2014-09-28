@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Reports Integration Tests:", js: true do
+describe "Reports Integration Test", js: true do
   describe "User should be able to" do
     include_context 'login'
 

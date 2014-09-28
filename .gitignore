@@ -16,3 +16,7 @@ rerun.txt
 pickle-email-*.html
 .idea/*
 config/deploy.rb
+config/database.yml
+/nbproject/private/
+serpinspector.sublime-project
+serpinspector.sublime-workspace

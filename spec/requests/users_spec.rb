@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe "Users Integration Tests:" do
-  describe "Admin" do
+describe "Users Integration Test" do
+  describe "Admin should be able to" do
     include_context 'login'
     
     before(:each) do
@@ -10,18 +10,18 @@ describe "Users Integration Tests:" do
       login(@user)
     end
 
-    it "should list users" do
+    it "list users" do
       visit users_path
       expect(page).to have_content @another_user.name
     end
 
-    it "should be able to view another_user" do
+    it "view another user" do
       visit users_path
       click_link "s_#{@another_user.id}"
       expect(page).to have_content @another_user.name
     end
 
-    it "should be able to edit another_user" do
+    it "another user" do
       visit users_path
       click_link "e_#{@another_user.id}"
       expect(page).to have_content 'Editing User'
@@ -31,14 +31,14 @@ describe "Users Integration Tests:" do
       expect(page).to have_content "User updated_user_name was successfully updated."
     end
 
-    it "should be able to delete another_user" do
+    it "delete another user" do
       visit users_path
       click_link "d_#{@another_user.id}"
       page.driver.browser.switch_to.alert.accept if page.driver.class == Capybara::Selenium::Driver
       expect(page).to have_content "User #{@another_user.name} was deleted."
     end
 
-    it "should be able to create new user" do
+    it "create new user" do
       new_user = FactoryGirl.build(:admin)
       visit users_path
       click_link "New User"

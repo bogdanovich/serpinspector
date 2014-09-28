@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe "Settings Integration Tests:" do
-  describe "Admin" do
+describe "Settings Integration Test" do
+  describe "Admin should be able to" do
     include_context 'login'
 
     before(:each) do
@@ -9,12 +9,12 @@ describe "Settings Integration Tests:" do
       login(@user)
     end
 
-    it "should be able to view settings" do
+    it "view settings" do
       visit '/settings'
       expect(page).to have_content 'Admin Email'
     end
 
-    it "should be able to update settings" do
+    it "update settings" do
       visit '/settings'
       fill_in 'settings_form_admin_email', with: 'updated@serpinspector.com'
       fill_in 'settings_form_not_found_symbol', with: '--'

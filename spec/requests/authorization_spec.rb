@@ -1,18 +1,18 @@
 require 'spec_helper'
 
-describe "Authorization Integration Tests:" do
+describe "Authorization Integration Test" do
   
-  describe "Requesting a page without authorization" do
-    it "should restrict access" do
+  describe "Request a page without authorization" do
+    it "should restrict access to settings page" do
       visit '/settings'
       expect(page).to have_button 'Login'
     end
   end
 
-  describe "Logging in process" do
+  describe "Log in process" do
     include_context 'login'
 
-    it 'should restrict access (wrong credentials)' do
+    it 'should restrict access when wrong credentials' do
       visit root_path
       expect(page).to have_button 'Login'
       fill_in 'name',     :with => 'some name'

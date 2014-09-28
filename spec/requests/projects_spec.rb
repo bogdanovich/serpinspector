@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Projects Integration Tests:", js: true do
+describe "Projects Integration Test", js: true do
   describe "Admin should be able to" do
     include_context 'login'
     
