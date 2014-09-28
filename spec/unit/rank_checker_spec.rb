@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Rank Checker Job Tests:' do
+describe 'Rank Checker Job Tests:', slow: true do
   specify 'fetch positions from google.com and bing.com search engines' do
     p = FactoryGirl.create(:project_rank_checking_google)
     r = RankCheckerJob.new(p.id)

@@ -1,7 +1,8 @@
 source 'http://rubygems.org'
 
-gem 'rails', '4.0.0'
-ruby "2.0.0"
+ruby "2.1.2"
+
+gem 'rails', '~> 4.1.6'
 gem 'mysql2', '~> 0.3.0'
 
 group :assets do 
@@ -10,33 +11,32 @@ group :assets do
   gem 'uglifier', '>= 1.3.0'
 end
 
-gem 'execjs'
-gem 'therubyracer', :platform => :ruby
-gem 'selenium-webdriver'
+gem 'execjs', '~> 2.2.1'
+gem 'therubyracer', platform: :ruby
+gem 'selenium-webdriver', '~> 2.43.0'
 
-gem 'jquery-rails'
+gem 'jquery-rails', '~> 3.1.2'
 gem 'jquery-ui-rails', "~> 5.0.0"
 
-gem 'file-tail', :require => 'file/tail'
-gem 'delayed_job_active_record'
-gem 'delayed_job'
+gem 'file-tail', require: 'file/tail'
+gem 'delayed_job_active_record', '~> 4.0.2'
+gem 'delayed_job', '~> 4.0.3'
 gem 'daemons'
-gem 'cancan'
-gem "rails-settings-cached", "0.3.1"
+gem 'cancan', '~> 1.6.10'
+gem 'rails-settings-cached', '~> 0.4.1'
 
 group :development do
-  gem 'capistrano'
-  gem 'rvm-capistrano'
+  gem 'puma'
 end
 
 group :test do 
-  gem 'rspec'
-  gem 'rspec-rails', '~> 2.13.1'
-  gem 'capybara'
-  gem 'poltergeist'
+  gem 'rspec', '~> 3.1.0'
+  gem 'rspec-rails', '~> 3.1.0'
+  gem 'capybara', '~> 2.4.3'
+  gem 'poltergeist', '~> 1.5.1'
   gem 'rb-notifu', '0.0.4'
-  gem 'database_cleaner', '1.0.1'
-  gem 'factory_girl_rails'
+  gem 'database_cleaner', '~> 1.3.0'
+  gem 'factory_girl_rails', require: false
 end
 
 

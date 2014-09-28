@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Users Integration Test" do
+describe "Users Integration Test", integration: true do
   describe "Admin should be able to" do
     include_context 'login'
     

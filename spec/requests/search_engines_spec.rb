@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "SearchEngines Integration Test" do
+describe "SearchEngines Integration Test", integration: true do
   describe "Admin shold be able to" do
   	include_context 'login'
     
@@ -38,7 +38,7 @@ describe "SearchEngines Integration Test" do
       expect(page).to have_content se.name
     end
 
-    it 'sdelete search engine' do
+    it 'delete search engine' do
       visit search_engines_path
       click_link "d_#{@search_engine.id}"
       page.driver.browser.switch_to.alert.accept if page.driver.class == Capybara::Selenium::Driver

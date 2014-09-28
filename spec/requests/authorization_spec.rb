@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Authorization Integration Test" do
+describe "Authorization Integration Test", integration: true do
   
   describe "Request a page without authorization" do
     it "should restrict access to settings page" do

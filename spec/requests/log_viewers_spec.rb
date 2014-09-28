@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "LogViewer Integration Test", js: true do
+describe "LogViewer Integration Test", js: true, integration: true do
   describe "Admin" do
     include_context 'login'
 

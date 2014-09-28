@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "FastOverview Integration Test" do
+describe "FastOverview Integration Test", integration: true do
   describe "Admin should be able to" do
     include_context 'login'
 

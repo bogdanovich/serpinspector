@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Settings Integration Test" do
+describe "Settings Integration Test", integration: true do
   describe "Admin should be able to" do
     include_context 'login'
 
