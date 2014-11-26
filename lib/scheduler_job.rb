@@ -31,19 +31,14 @@ class SchedulerJob
     when 'Daily'
       return false unless (ct.hour == s_time.hour and ct.min >= s_time.min) or ct.hour > s_time.hour
       return true if s_last_scheduled.nil?
-      #next line returns true when last_scheduled time more than 21 hour ago
-      #return true ct - s_last_scheduled >= s_factor.days - 3.hours
       return true if Date.civil(ct.year, ct.month, ct.day) - s_factor + 1  > Date.civil(s_last_scheduled.year, s_last_scheduled.month, s_last_scheduled.day)
     when 'Weekly'
       return false unless ct.wday == s_day and ((ct.hour == s_time.hour and ct.min >= s_time.min) or ct.hour > s_time.hour)
       return true if s_last_scheduled.nil?
-      #next line returns true when last_scheduled time more than factor * weeks-3 hours ago
-      #return true if ct - s_last_scheduled >= s_factor.weeks - 3.hours
       return true if Date.civil(ct.year, ct.month, ct.day) - 7 * s_factor + 1  > Date.civil(s_last_scheduled.year, s_last_scheduled.month, s_last_scheduled.day)
     when 'Monthly'
       return false unless ct.mday == s_day and ((ct.hour == s_time.hour and ct.min >= s_time.min) or ct.hour > s_time.hour)
       return true if s_last_scheduled.nil?
-      #return true if ct - s_last_scheduled >= (ct - ct.months_ago(s_factor)) - 3.hours
       time_x = ct.months_ago(s_factor)
       return true if Date.civil(time_x.year, time_x.month, time_x.day) + 1  > Date.civil(s_last_scheduled.year, s_last_scheduled.month, s_last_scheduled.day)
     end
