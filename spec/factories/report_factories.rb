@@ -7,7 +7,7 @@ FactoryGirl.define do
     updated_at         Time.now
 
     factory :report_group_with_reports do
-      ignore do
+      transient do
         reports_count 2
       end
 
@@ -25,7 +25,7 @@ FactoryGirl.define do
     updated_at             Time.now
 
     factory :report_with_items do
-      ignore do
+      transient do
         items_count 2
       end
 

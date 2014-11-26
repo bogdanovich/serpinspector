@@ -13,7 +13,7 @@ FactoryGirl.define do
     updated_at         Time.now
   
     factory :project_filled do
-      ignore do
+      transient do
         keywords_count 2
         sites_count    1
       end
