@@ -11,7 +11,12 @@ class Report < ActiveRecord::Base
     report['columns']        = []
     report['rows']           = []
     for item in items
-      report['data'][item.site][item.keyword][item.search_engine] = {'position' => item.position, 'position_change' => item.position_change}
+      
+      report['data'][item.site][item.keyword][item.search_engine] = {
+        'position' => item.position, 
+        'position_change' => item.position_change
+      }
+      
       report['columns'] << item.search_engine unless report['columns'].include?(item.search_engine)
       report['rows']    << item.keyword unless report['rows'].include?(item.keyword)
     end unless items.nil?

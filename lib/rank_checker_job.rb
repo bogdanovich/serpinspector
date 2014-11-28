@@ -12,63 +12,62 @@ end
 
 class RankCheckerJob < Struct.new(:project_id)
 
+  def init_job
+    @search_engines = @project.search_engines.where(active: true)
+    @keywords = @project.keywords
+    @sites_urls = @project.sites
+    @not_found_symbol = Settings.not_found_symbol
+    return !(@search_engines.blank? or @keywords.blank? or @sites_urls.blank?)
+  end
+
   def perform
     @project = Project.find_by(id: project_id)
-    if @project
-      puts @project.name + " Inspecting SERPs..."
-      log "#{Time.now} #{@project.name} Inspecting SERPs..."
-      @search_engines = @project.search_engines.where(active: true)
-      @keywords = @project.keywords
-      @sites_urls = @project.sites
-      if @search_engines.blank? or @keywords.blank? or @sites_urls.blank?
-        log "#{Time.now} Nothing to inspect (search_engines, keywords, urls should be defined)"
-        return
-      end
+    return "unknown project" unless @project
 
-      @not_found_symbol = Settings.not_found_symbol
+    log "#{Time.now} #{@project.name} Inspecting SERPs..."
+    unless init_job
+      log "#{Time.now} Nothing to inspect (search_engines, keywords, urls should be defined)"
+      return
+    end
 
-      @report_group = ReportGroup.find_or_create_by(name: @project.name, user_id: @project.user_id)
-      if @report_group.display_order.nil?
-        @report_group.display_order = @project.id
-        @report_group.save
-      end
-      @report = @report_group.reports.new
-      @report.status = "Scanning"
-      @report.save!
-      @fetch_rankings_error = ''
-      begin
-        @search_engines.each do |search_engine|
-          @keywords.each do |keyword|
-            begin
-              positions = fetch_rankings(search_engine, keyword, @sites_urls, @project.search_depth)
-            rescue Exception => details
-              log details.to_s
-              positions = {}
-              @fetch_rankings_error = details.to_s
-              @report.update_attribute :status, @fetch_rankings_error
-            end
-            @sites_urls.each do |site_url|
-              position_change = get_position_change(positions[site_url.name], site_url.name, keyword.name, search_engine.name)
-              @report_item = @report.report_items.new({:search_engine => search_engine.name,
-                                                      :keyword => keyword.name,
-                                                      :site => site_url.name,
-                                                      :position => positions[site_url.name],
-                                                      :position_change => position_change})
-              @report_item.save!
-              @project.last_scanned_at = Time.now
-              @project.save!
-              update_best_position(positions[site_url.name], site_url.name, keyword.name, search_engine.name)
-            end
+    report_group = ReportGroup.where(name: @project.name, user_id: @project.user_id).first_or_create
+    report_group.update(display_order: @project.id) unless report_group.display_order
+    report = report_group.reports.create(status: "Scanning")
+    fetch_error = ''
+
+    begin
+      @search_engines.each do |search_engine|
+        @keywords.each do |keyword|
+          begin
+            positions = fetch_rankings(search_engine, keyword, @sites_urls, @project.search_depth)
+          rescue Exception => details
+            log details.to_s
+            positions = {}
+            fetch_error = details.to_s
+            report.update(status: fetch_error)
+          end
+          @sites_urls.each do |url|
+            position_change = get_position_change(positions[url.name], url.name, keyword.name, search_engine.name)
+            
+            report.report_items.create(
+              search_engine: search_engine.name, 
+              keyword: keyword.name,
+              site: url.name,
+              position: positions[url.name],
+              position_change: position_change
+            )
+
+            @project.update(last_scanned_at: Time.now)
+            update_best_position(positions[url.name], url.name, keyword.name, search_engine.name)
           end
         end
-        @report.update_attribute :status, (@fetch_rankings_error.blank? ? "Finished" : @fetch_rankings_error)
-      rescue => details
-        log details.to_s.lines.first
-        @report.update_attribute :status, details.to_s
       end
-    else
-      return "unknown project (maybe deleted?)"
+      report.update(status: (fetch_error.blank? ? "Finished" : fetch_error))
+    rescue => details
+      log details.to_s.lines.first
+      report.update(status: details.to_s)
     end
+    
     return "done"
   end
 
@@ -76,27 +75,25 @@ class RankCheckerJob < Struct.new(:project_id)
   def fetch_rankings(search_engine, keyword, sites_urls, search_depth)
     @user_agent = random_user_agent
     
-    capabilities = Selenium::WebDriver::Remote::Capabilities.phantomjs('phantomjs.page.settings.userAgent' => @user_agent, 'phantomjs.page.customHeaders.Accept-Language' => 'en')
+    capabilities = Selenium::WebDriver::Remote::Capabilities.phantomjs(
+      'phantomjs.page.settings.userAgent' => @user_agent, 
+      'phantomjs.page.customHeaders.Accept-Language' => 'en'
+    )
+    
     @browser = Selenium::WebDriver.for :phantomjs, desired_capabilities: capabilities
 
-    #profile = Selenium::WebDriver::Firefox::Profile.new
-    #profile.native_events = false
-    #profile['general.useragent.override'] = @user_agent
-    #capabilities = Selenium::WebDriver::Remote::Capabilities.firefox(:firefox_profile => profile)
-    #@browser = Selenium::WebDriver.for :firefox, desired_capabilities: capabilities
-
-     # init result
-    log        "#{Time.now} Selected User Agent: #{@user_agent}"
-    log        "#{Time.now} Search engine: " + search_engine.name + ". Keyword: " + keyword.name
+    log "#{Time.now} Selected User Agent: #{@user_agent}"
+    log "#{Time.now} Search engine: " + search_engine.name + ". Keyword: " + keyword.name
+    
     positions = {}
-    sites_urls.each {|site_url| positions[site_url.name] = @not_found_symbol }
+    sites_urls.each {|url| positions[url.name] = @not_found_symbol }
 
     query_input = {}
     query_input[:tag], query_input[:value] = search_engine.query_input_selector.split(':')
 
     next_page = {}
     next_page[:tag], next_page[:value] = search_engine.next_page_selector.split(':')
-    item_regex      = Regexp.new(search_engine.item_regex, Regexp::IGNORECASE | Regexp::MULTILINE)
+    item_regex = Regexp.new(search_engine.item_regex, Regexp::IGNORECASE | Regexp::MULTILINE)
     
     current_depth = 0
     
@@ -107,7 +104,7 @@ class RankCheckerJob < Struct.new(:project_id)
       sleep(random_delay(search_engine.next_page_delay))
       log "#{Time.now} Fetching search results: #{current_depth.to_s} #{@browser.current_url}"
 
-      File.open("result.html", 'w') { |file| file.write(@browser.page_source) }
+      #File.open("result.html", 'w') { |file| file.write(@browser.page_source) }
 
       element = @browser.find_element(query_input[:tag], query_input[:value])
       @browser.action.move_to(element).click(element).perform
@@ -140,13 +137,13 @@ class RankCheckerJob < Struct.new(:project_id)
           return positions
         end
 
-        sites_urls.each do |site_url|
+        sites_urls.each do |url|
           fetched_urls.each_with_index do |fetched_url, index|
-            if unescaped_url(fetched_url.first).include?(site_url.name)
-              positions[site_url.name] = current_depth + index + 1
+            if unescaped_url(fetched_url.first).include?(url.name)
+              positions[url.name] = current_depth + index + 1
               break
             end
-          end if positions[site_url.name] == @not_found_symbol
+          end if positions[url.name] == @not_found_symbol
         end
         current_depth += fetched_urls.length
         log "#{Time.now} Fetching search results: #{current_depth.to_s} #{@browser.current_url}"
