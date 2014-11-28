@@ -73,16 +73,15 @@ class RankCheckerJob < Struct.new(:project_id)
 
   
   def fetch_rankings(search_engine, keyword, sites_urls, search_depth)
-    @user_agent = random_user_agent
-    
+    user_agent = random_user_agent
     capabilities = Selenium::WebDriver::Remote::Capabilities.phantomjs(
-      'phantomjs.page.settings.userAgent' => @user_agent, 
+      'phantomjs.page.settings.userAgent' => user_agent, 
       'phantomjs.page.customHeaders.Accept-Language' => 'en'
     )
     
     @browser = Selenium::WebDriver.for :phantomjs, desired_capabilities: capabilities
 
-    log "#{Time.now} Selected User Agent: #{@user_agent}"
+    log "#{Time.now} Selected User Agent: #{user_agent}"
     log "#{Time.now} Search engine: " + search_engine.name + ". Keyword: " + keyword.name
     
     positions = {}
@@ -104,8 +103,6 @@ class RankCheckerJob < Struct.new(:project_id)
       sleep(random_delay(search_engine.next_page_delay))
       log "#{Time.now} Fetching search results: #{current_depth.to_s} #{@browser.current_url}"
 
-      #File.open("result.html", 'w') { |file| file.write(@browser.page_source) }
-
       element = @browser.find_element(query_input[:tag], query_input[:value])
       @browser.action.move_to(element).click(element).perform
       element.send_keys keyword.name
@@ -114,24 +111,12 @@ class RankCheckerJob < Struct.new(:project_id)
       while positions.has_value?(@not_found_symbol) and current_depth < search_depth do
         sleep(random_delay(search_engine.next_page_delay))
 
-        # user emulation: moving mouse to input query field
-        element = @browser.find_element(query_input[:tag], query_input[:value])
-        @browser.action.move_to(element).perform
-
-        #user emulation: moving mouse downwards randomly
-        rand(1..10).times do |i|
-          @browser.action.move_by(0, rand(30..200)).perform
-        end  
-        
         page_body = @browser.page_source
         fetched_urls = page_body.scan(item_regex)
-
-        #log "#{Time.now} Found #{fetched_urls.length} urls"
 
         if fetched_urls.empty?
           log "#{Time.now} Search results not found. IP was banned OR Need to update regular expressions"
           log "#{Time.now} Search results not found. Saving page..."
-          #File.open("result.html", 'w') { |file| file.write(page_body) }
           save_page_body(search_engine.name + ' ' + keyword.name, page_body)
           @browser.quit
           return positions
@@ -148,21 +133,6 @@ class RankCheckerJob < Struct.new(:project_id)
         current_depth += fetched_urls.length
         log "#{Time.now} Fetching search results: #{current_depth.to_s} #{@browser.current_url}"
 
-        # user emulation: click random link with 20% chance
-        if rand(1..10) <= 3
-          current_url = @browser.current_url
-          link_elements = @browser.find_elements(:tag_name, 'a')
-          # don't click on first 5 links
-          link_elements = link_elements[5..-1]
-          random_link = link_elements[rand(link_elements.length)]
-          log "#{Time.now} User emulation: clicking random link #{random_link.attribute('href')}"
-          @browser.action.move_to(random_link).click(random_link).perform
-          sleep(random_delay(search_engine.next_page_delay))
-          log "#{Time.now} User emulation: navigating back #{current_url}"
-          @browser.navigate.to current_url
-          sleep(random_delay(search_engine.next_page_delay))
-        end
-   
         element = @browser.find_element(next_page[:tag], next_page[:value])
         @browser.action.move_to(element).click(element).perform
       end
@@ -179,12 +149,13 @@ class RankCheckerJob < Struct.new(:project_id)
 
   def get_position_change(current_position, site_name, keyword_name, search_engine_name)
     position_change = 0
-    @previous_position = ScanRegistry.last_position(site_name, keyword_name, search_engine_name)
-    if current_position.to_i > 0 and @previous_position.value.to_i > 0
-      position_change = @previous_position.value.to_i - current_position.to_i
+    last_position = ScanRegistry.last_position(site_name, keyword_name, search_engine_name)
+    current_position = current_position.to_i
+    previous_position = last_position.value.to_i
+    if current_position > 0 and previous_position > 0
+      position_change = previous_position - current_position
     end
-    @previous_position.value = current_position
-    @previous_position.save
+    last_position.update(value: current_position)
     position_change
   end
 
