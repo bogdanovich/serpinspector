@@ -12,7 +12,6 @@ Featues
 - Convenient reports view
 - Position change graph
 - Multi user interface
-- User behaviour emulation
 
 Installaton
 -------------
